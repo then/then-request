@@ -1,0 +1,27 @@
+{
+  "name": "then-request",
+  "version": "0.0.0",
+  "description": "A request library that returns promises, inspired by request",
+  "keywords": [],
+  "browser": "./browser.js",
+  "dependencies": {
+    "request-shared": "0.0.1",
+    "promise": "~3.2.0"
+  },
+  "devDependencies": {
+    "chromedriver": "~2.8.1",
+    "cabbie": "0.0.5",
+    "run-browser": "~1.2.0",
+    "concat-stream": "~1.4.1"
+  },
+  "scripts": {
+    "test": "node test/server.js & node test/index.js",
+    "test-browser": "node test/server.js & run-browser tests/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/then/request.git"
+  },
+  "author": "ForbesLindesay",
+  "license": "MIT"
+}
