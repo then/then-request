@@ -8,7 +8,7 @@ A request library that returns promises, inspired by request
 
 ## Installation
 
-    npm install request
+    npm install then-request
 
 ## License
 
