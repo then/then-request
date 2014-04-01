@@ -6,13 +6,13 @@
   "browser": "./browser.js",
   "dependencies": {
     "request-shared": "0.0.1",
-    "promise": "~3.2.0"
+    "promise": "~3.2.0",
+    "concat-stream": "~1.4.1"
   },
   "devDependencies": {
     "chromedriver": "~2.8.1",
     "cabbie": "0.0.5",
-    "run-browser": "~1.2.0",
-    "concat-stream": "~1.4.1"
+    "run-browser": "~1.2.0"
   },
   "scripts": {
     "test": "node test/server.js & node test/index.js",
