@@ -22,7 +22,7 @@ function doRequest(url, options) {
       var body = '';
       res.once('error', reject);
       res.pipe(concat(function (body) {
-        resolve(new Response(res.statusCode, res.headers, body));
+        resolve(new Response(res.statusCode, res.headers, Array.isArray(body) ? new Buffer() : body));
       }));
     });
     req.once('error', reject);
