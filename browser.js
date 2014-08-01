@@ -1,40 +1,56 @@
 'use strict';
 
 var Promise = require('promise');
-var Response = require('request-shared/lib/response');
+var Response = require('http-response-object');
+var handleQs = require('./lib/handle-qs.js');
 
 module.exports = doRequest;
-function doRequest(uri, options) {
-  return new Promise(function (resolve, reject) {
+function doRequest(method, url, options, callback) {
+  var result = new Promise(function (resolve, reject) {
     var xhr = new window.XMLHttpRequest();
 
-    // 1 - handle variable list of arguments
-    if (typeof uri === 'undefined') {
-      throw new TypeError('undefined is not a valid uri or options object.');
+    // check types of arguments
+
+    if (typeof method !== 'string') {
+      throw new TypeError('The method must be a string.');
     }
-    if (options && typeof options === 'object') {
-      options.uri = uri;
-    } else if (typeof uri === 'string') {
-      options = {uri: uri};
-    } else {
-      options = uri;
+    if (typeof url !== 'string') {
+      throw new TypeError('The URL/path must be a string.');
     }
-    options = copy(options);
-    if (options.url && !options.uri) {
-      options.uri = options.url;
-      delete options.url;
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
     }
+    if (options === null || options === undefined) {
+      options = {};
+    }
+    if (typeof options !== 'object') {
+      throw new TypeError('Options must be an object (or null).');
+    }
+    if (typeof callback !== 'function') {
+      callback = undefined;
+    }
+
+    method = method.toUpperCase();
     options.headers = options.headers || {};
 
-    // 2 - handle cross domain option
-    if (!options.crossDomain) {
-      var match;
-      options.crossDomain = !!((match = /^([\w-]+:)?\/\/([^\/]+)/.exec(options.uri)) &&
-                               (match[2] != window.location.host));
-    }
-    if (!options.crossDomain) options.headers['X-Requested-With'] = 'XMLHttpRequest';
+    // handle cross domain
 
-    options.method = (options.method || 'GET').toUpperCase();
+    var match;
+    var crossDomain = !!((match = /^([\w-]+:)?\/\/([^\/]+)/.exec(options.uri)) && (match[2] != window.location.host));
+    if (!crossDomain) options.headers['X-Requested-With'] = 'XMLHttpRequest';
+
+    // handle query string
+    if (options.qs) {
+      url = handleQs(url, options.qs);
+    }
+
+    // handle json body
+    if (options.json) {
+      options.body = JSON.stringify(options.json);
+      options.headers['content-type'] = 'application/json';
+    }
+
 
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
@@ -48,8 +64,9 @@ function doRequest(uri, options) {
         resolve(new Response(xhr.status, headers, xhr.responseText));
       }
     };
-    // type, uri, async
-    xhr.open(options.method, options.uri, true);
+
+    // method, url, async
+    xhr.open(method, url, true);
 
     for (var name in options.headers) {
       xhr.setRequestHeader(name.toLowerCase(), options.headers[name]);
@@ -58,29 +75,8 @@ function doRequest(uri, options) {
     // avoid sending empty string (#319)
     xhr.send(options.body ? options.body : null);
   });
+  result.getBody = function () {
+    return result.then(function (res) { return res.getBody(); });
+  };
+  return result.nodeify(callback);
 }
-
-function copy(obj, seen) {
-  seen = seen || [];
-  if (seen.indexOf(obj) !== -1) {
-    throw new Error('Unexpected circular reference in options');
-  }
-  seen.push(obj);
-  if (Array.isArray(obj)) {
-    return obj.map(function (item) {
-      return copy(item, seen);
-    });
-  } else if (obj && typeof obj === 'object') {
-    var o = {}
-    Object.keys(obj).forEach(function (i) {
-      o[i] = copy(obj[i], seen)
-    })
-    return o
-  } else {
-    return obj;
-  }
-}
-
-function empty() {
-}
-

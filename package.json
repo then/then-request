@@ -5,18 +5,18 @@
   "keywords": [],
   "browser": "./browser.js",
   "dependencies": {
-    "request-shared": "0.0.1",
-    "promise": "~3.2.0",
-    "concat-stream": "~1.4.1"
+    "promise": "^5.0.0",
+    "concat-stream": "^1.4.1",
+    "qs": "^0.6.6",
+    "http-response-object": "^1.0.1",
+    "http-basic": "^1.0.2"
   },
   "devDependencies": {
-    "chromedriver": "~2.8.1",
-    "cabbie": "0.0.5",
-    "run-browser": "~1.2.0"
+    "testit": "^1.2.0",
+    "istanbul": "^0.3.0"
   },
   "scripts": {
-    "test": "node test/server.js & node test/index.js",
-    "test-browser": "node test/server.js & run-browser tests/index.js"
+    "test": "node test/index.js && istanbul cover test/index.js"
   },
   "repository": {
     "type": "git",

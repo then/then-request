@@ -1,31 +1,70 @@
 'use strict';
 
+var parseUrl = require('url').parse;
 var Promise = require('promise');
-var Request = require('request-shared').Request;
-var Response = require('request-shared').Response;
 var concat = require('concat-stream');
-var protocols = {
-  http: require('http'),
-  https: require('https')
-};
+var Response = require('http-response-object');
+var handleQs = require('./lib/handle-qs.js');
 
 module.exports = doRequest;
-function doRequest(url, options) {
-  return new Promise(function (resolve, reject) {
-    var request = new Request(url, options);
-    if (['http', 'https'].indexOf(request.protocol) === -1) {
-      throw new Error('Invalid protocol ' + request.protocol);
+module.exports._request = require('http-basic');
+function doRequest(method, url, options, callback) {
+  var result = new Promise(function (resolve, reject) {
+    // check types of arguments
+
+    if (typeof method !== 'string') {
+      throw new TypeError('The method must be a string.');
     }
-    var http = protocols[request.protocol];
-    delete request.protocol;
-    var req = http.request(request, function (res) {
-      var body = '';
-      res.once('error', reject);
-      res.pipe(concat(function (body) {
+    if (typeof url !== 'string') {
+      throw new TypeError('The URL/path must be a string.');
+    }
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
+    }
+    if (options === null || options === undefined) {
+      options = {};
+    }
+    if (typeof options !== 'object') {
+      throw new TypeError('Options must be an object (or null).');
+    }
+    if (typeof callback !== 'function') {
+      callback = undefined;
+    }
+
+    method = method.toUpperCase();
+    options.headers = options.headers || {};
+
+    // handle query string
+    if (options.qs) {
+      url = handleQs(url, options.qs);
+    }
+
+    // handle json body
+    if (options.json) {
+      options.body = JSON.stringify(options.json);
+      options.headers['content-type'] = 'application/json';
+    }
+
+    var req = module.exports._request(method, url, {
+      headers: options.headers,
+      followRedirects: true,
+      gzip: true,
+      cache: options.cache
+    }, function (err, res) {
+      if (err) return reject(err);
+      res.body.on('error', reject);
+      res.body.pipe(concat(function (body) {
         resolve(new Response(res.statusCode, res.headers, Array.isArray(body) ? new Buffer(0) : body));
       }));
     });
-    req.once('error', reject);
-    req.end(request.body);
+
+    if (req) {
+      req.end(options.body ? options.body : new Buffer(0));
+    }
   });
+  result.getBody = function (encoding) {
+    return result.then(function (res) { return res.getBody(encoding); });
+  };
+  return result.nodeify(callback);
 }
