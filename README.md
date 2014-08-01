@@ -2,9 +2,9 @@
 
 A request library that returns promises, inspired by request
 
-[![Build Status](https://travis-ci.org/then/request.png?branch=master)](https://travis-ci.org/then/request)
-[![Dependency Status](https://gemnasium.com/then/request.png)](https://gemnasium.com/then/request)
-[![NPM version](https://badge.fury.io/js/then-request.png)](http://badge.fury.io/js/then-request)
+[![Build Status](https://img.shields.io/travis/then/request/master.svg)](https://travis-ci.org/then/request)
+[![Dependency Status](https://img.shields.io/gemnasium/then/request.svg)](https://gemnasium.com/then/request)
+[![NPM version](https://img.shields.io/npm/v/then-request.svg)](https://www.npmjs.org/package/then-request)
 
 ## Installation
 
