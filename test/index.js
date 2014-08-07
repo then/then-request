@@ -7,7 +7,7 @@ test('./lib/handle-qs.js', function () {
   var handleQs = require('../lib/handle-qs.js');
 
   assert(handleQs('http://example.com/', {foo: 'bar'}) === 'http://example.com/?foo=bar');
-  assert(handleQs('http://example.com/', {foo: {bar: 'baz'}}) === 'http://example.com/?foo[bar]=baz');
+  assert(handleQs('http://example.com/', {foo: {bar: 'baz'}}) === 'http://example.com/?foo%5Bbar%5D=baz');
   assert(handleQs('http://example.com/', {foo: 'bar', bing: 'bong'}) === 'http://example.com/?foo=bar&bing=bong');
   assert(handleQs('http://example.com/?foo=bar', {bing: 'bong'}) === 'http://example.com/?foo=bar&bing=bong');
   assert(handleQs('http://example.com/?foo=bar#ding', {bing: 'bong'}) === 'http://example.com/?foo=bar&bing=bong#ding');
