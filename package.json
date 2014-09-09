@@ -7,7 +7,7 @@
   "dependencies": {
     "promise": "^5.0.0",
     "concat-stream": "^1.4.6",
-    "qs": "^1.1.0",
+    "qs": "^2.2.3",
     "http-response-object": "^1.0.1",
     "http-basic": "^1.0.3"
   },
