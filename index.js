@@ -1,5 +1,6 @@
 'use strict';
 
+var assert = require('assert');
 var parseUrl = require('url').parse;
 var Promise = require('promise');
 var concat = require('concat-stream');
@@ -46,6 +47,13 @@ function doRequest(method, url, options, callback) {
       options.headers['content-type'] = 'application/json';
     }
 
+    var body = options.body ? options.body : new Buffer(0);
+    if (typeof body === 'string') body = new Buffer(body);
+    assert(Buffer.isBuffer(body), 'body should be a Buffer or a String');
+    if (!Object.keys(options.headers).some(function (name) { return name.toLowerCase() === 'content-length'; })) {
+      options.headers['content-length'] = body.length;
+    }
+
     var req = module.exports._request(method, url, {
       headers: options.headers,
       followRedirects: true,
@@ -60,7 +68,7 @@ function doRequest(method, url, options, callback) {
     });
 
     if (req) {
-      req.end(options.body ? options.body : new Buffer(0));
+      req.end(body);
     }
   });
   result.getBody = function (encoding) {
