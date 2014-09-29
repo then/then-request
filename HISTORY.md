@@ -1,3 +1,8 @@
+1.0.4 / 2014-09-29
+==================
+
+ * Update promise to 6.0.0 ([@ForbesLindesay](https://github.com/ForbesLindesay))
+
 1.0.3 / 2014-09-09
 ==================
 
