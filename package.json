@@ -5,7 +5,7 @@
   "keywords": [],
   "browser": "./browser.js",
   "dependencies": {
-    "promise": "^5.0.0",
+    "promise": "^6.0.0",
     "concat-stream": "^1.4.6",
     "qs": "^2.2.3",
     "http-response-object": "^1.0.1",
