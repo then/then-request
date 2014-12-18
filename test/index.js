@@ -2,10 +2,13 @@
 
 var assert = require('assert');
 var test = require('testit');
+var Promise = require('promise');
 
 test('./lib/handle-qs.js', function () {
   var handleQs = require('../lib/handle-qs.js');
 
+  assert(handleQs('http://example.com/', {}) === 'http://example.com/');
+  assert(handleQs('http://example.com/?foo=bar', {}) === 'http://example.com/?foo=bar');
   assert(handleQs('http://example.com/', {foo: 'bar'}) === 'http://example.com/?foo=bar');
   assert(handleQs('http://example.com/', {foo: {bar: 'baz'}}) === 'http://example.com/?foo%5Bbar%5D=baz');
   assert(handleQs('http://example.com/', {foo: 'bar', bing: 'bong'}) === 'http://example.com/?foo=bar&bing=bong');
@@ -65,6 +68,28 @@ function testEnv(env) {
       throw new Error('Expected an error');
     }, function (err) {
       assert(err instanceof TypeError);
+    });
+  });
+  test(env + ' - Callbacks', function () {
+    return new Promise(function (resolve, reject) {
+      return request('GET', 'http://example.com', function (err, res) {
+        if (err) return reject(err);
+        assert(res.statusCode === 200);
+        assert(res.headers['foo'] === 'bar');
+        assert(res.body.toString() === 'body');
+        resolve(null);
+      });
+    });
+  });
+  test(env + ' - Callbacks', function () {
+    return new Promise(function (resolve, reject) {
+      return request('GET', 'http://example.com', {}, function (err, res) {
+        if (err) return reject(err);
+        assert(res.statusCode === 200);
+        assert(res.headers['foo'] === 'bar');
+        assert(res.body.toString() === 'body');
+        resolve(null);
+      });
     });
   });
 }

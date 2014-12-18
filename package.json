@@ -5,15 +5,15 @@
   "keywords": [],
   "browser": "./browser.js",
   "dependencies": {
-    "promise": "^6.0.0",
-    "concat-stream": "^1.4.6",
-    "qs": "^2.2.3",
+    "promise": "^6.0.1",
+    "concat-stream": "^1.4.7",
+    "qs": "^2.3.3",
     "http-response-object": "^1.0.1",
-    "http-basic": "^1.0.3"
+    "http-basic": "^1.1.1"
   },
   "devDependencies": {
     "testit": "^1.2.0",
-    "istanbul": "^0.3.0"
+    "istanbul": "^0.3.5"
   },
   "scripts": {
     "test": "node test/index.js && istanbul cover test/index.js"
