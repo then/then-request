@@ -37,10 +37,12 @@ A url as a string (e.g. `http://example.com`). Relative URLs are allowed in the 
  - `body` - body for PATCH, POST and PUT requests.  Must be a `Buffer` or `String` (only strings are accepted client side)
  - `json` - sets `body` but to JSON representation of value and adds `Content-type: application/json`.  Does not have any affect on how the response is treated.
  - `cache` - only used in node.js (browsers already have their own caches) Can be `'memory'`, `'file'` or your own custom implementaton (see https://github.com/ForbesLindesay/http-basic#implementing-a-cache).
+ - `followRedirects` - defaults to `true` but can be explicitly set to `false` on node.js to prevent then-request following redirects automatically.
+ - `gzip` - defaults to `true` but can be explicitly set to `false` on node.js to prevent then-request automatically supporting the gzip encoding on responses.
 
 **Callback / Returns:**
 
-If a callback is provided it is called with `err` and `res`. If no callback is provided, a [Promise](https://www.promisejs.org/) is returned that eventually resolves to `res`.  The resulting Promise also has an additional `.getBody(encoding?)` method that is equivallent to calling `.then(function (res) { return res.getBody(); })`.
+If a callback is provided it is called with `err` and `res`. If no callback is provided, a [Promise](https://www.promisejs.org/) is returned that eventually resolves to `res`.  The resulting Promise also has an additional `.getBody(encoding?)` method that is equivallent to calling `.then(function (res) { return res.getBody(encoding?); })`.
 
 ### Response
 

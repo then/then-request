@@ -56,8 +56,8 @@ function doRequest(method, url, options, callback) {
 
     var req = module.exports._request(method, url, {
       headers: options.headers,
-      followRedirects: true,
-      gzip: true,
+      followRedirects: options.followRedirects !== false,
+      gzip: options.gzip !== false,
       cache: options.cache
     }, function (err, res) {
       if (err) return reject(err);
