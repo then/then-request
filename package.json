@@ -9,7 +9,7 @@
     "concat-stream": "^1.4.7",
     "qs": "^2.3.3",
     "http-response-object": "^1.0.1",
-    "http-basic": "^1.1.1"
+    "http-basic": "^2.0.0"
   },
   "devDependencies": {
     "testit": "^1.2.0",
