@@ -12,11 +12,21 @@
     "http-basic": "^2.0.0"
   },
   "devDependencies": {
-    "testit": "^1.2.0",
-    "istanbul": "^0.3.5"
+    "browserify": "^8.1.1",
+    "exorcist": "^0.1.6",
+    "istanbul": "^0.3.5",
+    "minifyify": "^6.0.0",
+    "mkdirp": "^0.5.0",
+    "rimraf": "^2.2.8",
+    "testit": "^1.2.0"
   },
   "scripts": {
-    "test": "node test/index.js && istanbul cover test/index.js"
+    "test": "node test/index.js && istanbul cover test/index.js",
+    "prebuild": "rimraf dist && mkdirp dist",
+    "prepublish": "npm run build",
+    "build": "npm run build:full && npm run build:min",
+    "build:full": "browserify -d --standalone request browser.js | exorcist -u request.js.map dist/request.js.map > dist/request.js",
+    "build:min": "browserify -d --standalone request browser.js -p [minifyify --compressPath . --map request.min.js.map --output dist/request.min.js.map] > dist/request.min.js"
   },
   "repository": {
     "type": "git",
