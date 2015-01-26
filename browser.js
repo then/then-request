@@ -34,6 +34,39 @@ function doRequest(method, url, options, callback) {
     method = method.toUpperCase();
     options.headers = options.headers || {};
 
+
+    function attempt(n) {
+      doRequest(method, url, {
+        qs: options.qs,
+        headers: options.headers,
+        timeout: options.timeout
+      }).nodeify(function (err, res) {
+        var retry = err || res.statusCode >= 400;
+        if (typeof options.retry === 'function') {
+          retry = options.retry(err, res, n + 1);
+        }
+        if (n >= (options.maxRetries | 5)) {
+          retry = false;
+        }
+        if (retry) {
+          var delay = options.retryDelay;
+          if (typeof options.retryDelay === 'function') {
+            delay = options.retryDelay(err, res, n + 1);
+          }
+          delay = delay || 200;
+          setTimeout(function () {
+            attempt(n + 1);
+          }, delay);
+        } else {
+          if (err) reject(err);
+          else resolve(res);
+        }
+      });
+    }
+    if (options.retry && method === 'GET') {
+      return attempt(0);
+    }
+
     // handle cross domain
 
     var match;
@@ -51,7 +84,17 @@ function doRequest(method, url, options, callback) {
       options.headers['content-type'] = 'application/json';
     }
 
-
+    if (options.timeout) {
+      xhr.timeout = options.timeout;
+      var start = Date.now();
+      xhr.ontimeout = function () {
+        var duration = Date.now() - start;
+        var err = new Error('Request timed out after ' + duration + 'ms');
+        err.timeout = true;
+        err.duration = duration;
+        reject(err);
+      };
+    }
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         var headers = {};
@@ -61,7 +104,9 @@ function doRequest(method, url, options, callback) {
             headers[h[0].toLowerCase()] = h.slice(1).join(':').trim();
           }
         });
-        resolve(new Response(xhr.status, headers, xhr.responseText));
+        var res = new Response(xhr.status, headers, xhr.responseText);
+        res.url = url;
+        resolve(res);
       }
     };
 

@@ -17,6 +17,8 @@ A request library that returns promises, inspired by request
 e.g.
 
 ```js
+var request = require('then-request');
+
 request('GET', 'http://example.com').done(function (res) {
   console.log(res.getBody());
 });
@@ -38,7 +40,14 @@ A url as a string (e.g. `http://example.com`). Relative URLs are allowed in the 
  - `json` - sets `body` but to JSON representation of value and adds `Content-type: application/json`.  Does not have any affect on how the response is treated.
  - `cache` - only used in node.js (browsers already have their own caches) Can be `'memory'`, `'file'` or your own custom implementaton (see https://github.com/ForbesLindesay/http-basic#implementing-a-cache).
  - `followRedirects` - defaults to `true` but can be explicitly set to `false` on node.js to prevent then-request following redirects automatically.
+ - `maxRedirects` - sets the maximum number of redirects to follow before erroring on node.js (default: `Infinity`)
  - `gzip` - defaults to `true` but can be explicitly set to `false` on node.js to prevent then-request automatically supporting the gzip encoding on responses.
+ - `timeout` (default: `false`) - times out if no response is returned within the given number of milliseconds.
+ - `socketTimeout` (default: `false`) - calls `req.setTimeout` internally which causes the request to timeout if no new data is seen for the given number of milliseconds.  This option is ignored in the browser.
+ - `retry` (default: `false`) - retry GET requests.  Set this to `true` to retry when the request errors or returns a status code greater than or equal to 400 (can also be a function that takes `(err, req, attemptNo) => shouldRetry`)
+ - `retryDelay` (default: `200`) - the delay between retries (can also be set to a function that takes `(err, res, attemptNo) => delay`)
+ - `maxRetries` (default: `5`) - the number of times to retry before giving up.
+
 
 **Callback / Returns:**
 
@@ -51,6 +60,7 @@ Note that even for status codes that represent an error, the promise will be res
  - `statusCode` - a number representing the HTTP status code
  - `headers` - http response headers
  - `body` - a string if in the browser or a buffer if on the server
+ - `url` - the URL that was requested (in the case of redirects on the server, this is the final url that was requested)
 
 It also has a method `getBody(encoding?)` which looks like:
 

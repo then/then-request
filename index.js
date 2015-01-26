@@ -57,13 +57,21 @@ function doRequest(method, url, options, callback) {
     var req = module.exports._request(method, url, {
       headers: options.headers,
       followRedirects: options.followRedirects !== false,
+      maxRedirects: options.maxRedirects,
       gzip: options.gzip !== false,
-      cache: options.cache
+      cache: options.cache,
+      timeout: options.timeout,
+      socketTimeout: options.socketTimeout,
+      retry: options.retry,
+      retryDelay: options.retryDelay,
+      maxRetries: options.maxRetries
     }, function (err, res) {
       if (err) return reject(err);
       res.body.on('error', reject);
       res.body.pipe(concat(function (body) {
-        resolve(new Response(res.statusCode, res.headers, Array.isArray(body) ? new Buffer(0) : body));
+        var result = new Response(res.statusCode, res.headers, Array.isArray(body) ? new Buffer(0) : body);
+        result.url = res.url;
+        resolve(result);
       }));
     });
 
