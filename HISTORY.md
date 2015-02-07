@@ -1,3 +1,28 @@
+2.1.0 / 2015-01-21
+==================
+
+ * Add retry, maxRedirects and timeout
+
+2.0.3 / 2015-01-21
+==================
+
+ * Add a "dist" folder with prebuilt clients for browsers
+
+2.0.1 / 2015-01-14
+==================
+
+ * Add support for 303 See Other redirects
+
+1.1.0 / 2014-12-18
+==================
+
+ * Support not following redirects
+
+1.0.5 / 2014-12-18
+==================
+
+ * Update dependencies
+
 1.0.4 / 2014-09-29
 ==================
 
