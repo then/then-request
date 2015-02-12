@@ -81,7 +81,7 @@ function doRequest(method, url, options, callback) {
     // handle json body
     if (options.json) {
       options.body = JSON.stringify(options.json);
-      options.headers['content-type'] = 'application/json';
+      options.headers['Content-Type'] = 'application/json';
     }
 
     if (options.timeout) {
@@ -114,7 +114,7 @@ function doRequest(method, url, options, callback) {
     xhr.open(method, url, true);
 
     for (var name in options.headers) {
-      xhr.setRequestHeader(name.toLowerCase(), options.headers[name]);
+      xhr.setRequestHeader(name, options.headers[name]);
     }
 
     // avoid sending empty string (#319)

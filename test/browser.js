@@ -17,7 +17,6 @@ XMLHttpRequest.prototype.open = function (method, url, async) {
   this._url = url;
 };
 XMLHttpRequest.prototype.setRequestHeader = function (name, value) {
-  assert(name === name.toLowerCase(), 'All headers must be lower case');
   this._headers[name] = value;
 };
 XMLHttpRequest.prototype.send = function (body) {

@@ -13,7 +13,7 @@ function getResponse(method, url, headers, body, options) {
     return new Response(200, {FoO: 'baz'}, 'body');
   }
   if (method === 'POST' && url === 'http://example.com') {
-    assert(headers['content-type'] === 'application/json');
+    assert(headers['Content-Type'] === 'application/json');
     assert(JSON.parse(body.toString()).foo === 'baz');
     return new Response(200, {}, 'json body');
   }

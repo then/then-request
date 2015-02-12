@@ -5,6 +5,7 @@ var parseUrl = require('url').parse;
 var Promise = require('promise');
 var concat = require('concat-stream');
 var Response = require('http-response-object');
+var caseless = require('caseless');
 var handleQs = require('./lib/handle-qs.js');
 
 module.exports = doRequest;
@@ -35,6 +36,7 @@ function doRequest(method, url, options, callback) {
 
     method = method.toUpperCase();
     options.headers = options.headers || {};
+    var headers = caseless(options.headers);
 
     // handle query string
     if (options.qs) {
@@ -44,14 +46,14 @@ function doRequest(method, url, options, callback) {
     // handle json body
     if (options.json) {
       options.body = JSON.stringify(options.json);
-      options.headers['content-type'] = 'application/json';
+      headers.set('Content-Type', 'application/json');
     }
 
     var body = options.body ? options.body : new Buffer(0);
     if (typeof body === 'string') body = new Buffer(body);
     assert(Buffer.isBuffer(body), 'body should be a Buffer or a String');
-    if (!Object.keys(options.headers).some(function (name) { return name.toLowerCase() === 'content-length'; })) {
-      options.headers['content-length'] = body.length;
+    if (!headers.has('Content-Length')) {
+      headers.set('Content-Length', body.length);
     }
 
     var req = module.exports._request(method, url, {
