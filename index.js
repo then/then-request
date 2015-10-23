@@ -71,9 +71,13 @@ function doRequest(method, url, options, callback) {
       if (err) return reject(err);
       res.body.on('error', reject);
       res.body.pipe(concat(function (body) {
-        var result = new Response(res.statusCode, res.headers, Array.isArray(body) ? new Buffer(0) : body);
-        result.url = res.url;
-        resolve(result);
+        resolve(
+          new Response(
+            res.statusCode,
+            res.headers, Array.isArray(body) ? new Buffer(0) : body,
+            result.url
+          )
+        );
       }));
     });
 

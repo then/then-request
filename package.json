@@ -8,7 +8,7 @@
     "caseless": "~0.9.0",
     "concat-stream": "^1.4.7",
     "http-basic": "^2.0.0",
-    "http-response-object": "^1.0.1",
+    "http-response-object": "^1.1.0",
     "promise": "^6.0.1",
     "qs": "^2.3.3"
   },
