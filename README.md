@@ -3,7 +3,7 @@
 A request library that returns promises, inspired by request
 
 [![Build Status](https://img.shields.io/travis/then/then-request/master.svg)](https://travis-ci.org/then/then-request)
-[![Dependency Status](https://img.shields.io/gemnasium/then/then-request.svg)](https://gemnasium.com/then/then-request)
+[![Dependency Status](https://img.shields.io/david/then/then-request.svg)](https://david-dm.org/then/then-request)
 [![NPM version](https://img.shields.io/npm/v/then-request.svg)](https://www.npmjs.org/package/then-request)
 
 ## Installation
