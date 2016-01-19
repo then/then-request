@@ -57,6 +57,7 @@ function doRequest(method, url, options, callback) {
     }
 
     var req = module.exports._request(method, url, {
+      allowRedirectHeaders: options.allowRedirectHeaders,
       headers: options.headers,
       followRedirects: options.followRedirects !== false,
       maxRedirects: options.maxRedirects,
