@@ -70,7 +70,7 @@ function doRequest(method, url, options, callback) {
     // handle cross domain
 
     var match;
-    var crossDomain = !!((match = /^([\w-]+:)?\/\/([^\/]+)/.exec(options.uri)) && (match[2] != window.location.host));
+    var crossDomain = !!((match = /^([\w-]+:)?\/\/([^\/]+)/.exec(url)) && (match[2] != window.location.host));
     if (!crossDomain) options.headers['X-Requested-With'] = 'XMLHttpRequest';
 
     // handle query string
