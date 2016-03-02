@@ -5,12 +5,12 @@
   "keywords": [],
   "browser": "./browser.js",
   "dependencies": {
-    "caseless": "~0.9.0",
+    "caseless": "~0.11.0",
     "concat-stream": "^1.4.7",
-    "http-basic": "^2.0.0",
+    "http-basic": "^2.5.1",
     "http-response-object": "^1.1.0",
-    "promise": "^6.0.1",
-    "qs": "^2.3.3"
+    "promise": "^7.1.1",
+    "qs": "^6.1.0"
   },
   "devDependencies": {
     "browserify": "^8.1.1",
