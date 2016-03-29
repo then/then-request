@@ -63,6 +63,7 @@ function doRequest(method, url, options, callback) {
       maxRedirects: options.maxRedirects,
       gzip: options.gzip !== false,
       cache: options.cache,
+      agent: options.agent,
       timeout: options.timeout,
       socketTimeout: options.socketTimeout,
       retry: options.retry,
