@@ -27,6 +27,7 @@ function testEnv(env) {
       assert(res.statusCode === 200);
       assert(res.headers['foo'] === 'bar');
       assert(res.body.toString() === 'body');
+      assert(res.url === 'http://example.com');
     });
   });
   test(env + ' - GET query', function () {
