@@ -6,6 +6,7 @@ var Promise = require('promise');
 var concat = require('concat-stream');
 var Response = require('http-response-object');
 var caseless = require('caseless');
+var FormData = require('form-data');
 var handleQs = require('./lib/handle-qs.js');
 
 module.exports = doRequest;
@@ -52,8 +53,21 @@ function doRequest(method, url, options, callback) {
     var body = options.body ? options.body : new Buffer(0);
     if (typeof body === 'string') body = new Buffer(body);
     assert(Buffer.isBuffer(body), 'body should be a Buffer or a String');
-    if (!headers.has('Content-Length')) {
+    if (!headers.has('Content-Length') && !options.form) {
       headers.set('Content-Length', body.length);
+    }
+    if (options.form) {
+      var form = new FormData();
+      for (var field in options.form) {
+        var o = options.form[field];
+        if (typeof o === 'object') {
+          form.append(field, o.value, o.options);
+        } else {
+          form.append(field, o);
+        }
+      }
+
+      Object.assign(options.headers, form.getHeaders());
     }
 
     var req = module.exports._request(method, url, {
@@ -82,10 +96,15 @@ function doRequest(method, url, options, callback) {
       }));
     });
 
-    if (req) {
+    if (options.form && form) {
+      form.pipe(req);
+    }
+
+    if (req && !options.form) {
       req.end(body);
     }
   });
+
   result.getBody = function (encoding) {
     return result.then(function (res) { return res.getBody(encoding); });
   };
