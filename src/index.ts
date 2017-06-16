@@ -1,17 +1,21 @@
 'use strict';
 
-var assert = require('assert');
-var parseUrl = require('url').parse;
-var Promise = require('promise');
-var concat = require('concat-stream');
-var Response = require('http-response-object');
-var caseless = require('caseless');
-var handleQs = require('./lib/handle-qs.js');
+import {HttpVerb} from 'http-basic/lib/HttpVerb';
+import Response = require('http-response-object');
+import Promise = require('promise');
+import concat = require('concat-stream');
+import {Options} from './Options';
+import toResponsePromise, {ResponsePromise} from './ResponsePromise';
+import {RequestFn} from './RequestFn';
+import handleQs from './handle-qs';
+import _basicRequest = require('http-basic');
 
-module.exports = doRequest;
-module.exports._request = require('http-basic');
-function doRequest(method, url, options, callback) {
-  var result = new Promise(function (resolve, reject) {
+const caseless = require('caseless');
+
+let basicRequest = _basicRequest;
+
+function request(method: HttpVerb, url: string, options?: Options): ResponsePromise {
+  return toResponsePromise(new Promise((resolve: (v: Response<Buffer | string>) => void, reject: (e: any) => void) => {
     // check types of arguments
 
     if (typeof method !== 'string') {
@@ -20,21 +24,14 @@ function doRequest(method, url, options, callback) {
     if (typeof url !== 'string') {
       throw new TypeError('The URL/path must be a string.');
     }
-    if (typeof options === 'function') {
-      callback = options;
-      options = {};
-    }
-    if (options === null || options === undefined) {
+    if (options == null) {
       options = {};
     }
     if (typeof options !== 'object') {
       throw new TypeError('Options must be an object (or null).');
     }
-    if (typeof callback !== 'function') {
-      callback = undefined;
-    }
 
-    method = method.toUpperCase();
+    method = (method.toUpperCase() as any);
     options.headers = options.headers || {};
     var headers = caseless(options.headers);
 
@@ -51,12 +48,14 @@ function doRequest(method, url, options, callback) {
 
     var body = options.body ? options.body : new Buffer(0);
     if (typeof body === 'string') body = new Buffer(body);
-    assert(Buffer.isBuffer(body), 'body should be a Buffer or a String');
+    if (!Buffer.isBuffer(body)) {
+      throw new TypeError('body should be a Buffer or a String');
+    }
     if (!headers.has('Content-Length')) {
       headers.set('Content-Length', body.length);
     }
 
-    var req = module.exports._request(method, url, {
+    var req = basicRequest(method, url, {
       allowRedirectHeaders: options.allowRedirectHeaders,
       headers: options.headers,
       followRedirects: options.followRedirects !== false,
@@ -67,16 +66,21 @@ function doRequest(method, url, options, callback) {
       socketTimeout: options.socketTimeout,
       retry: options.retry,
       retryDelay: options.retryDelay,
-      maxRetries: options.maxRetries
-    }, function (err, res) {
+      maxRetries: options.maxRetries,
+
+      isMatch: options.isMatch,
+      isExpired: options.isExpired,
+      canCache: options.canCache,
+    }, (err: NodeJS.ErrnoException, res: Response<NodeJS.ReadableStream>) => {
       if (err) return reject(err);
       res.body.on('error', reject);
-      res.body.pipe(concat(function (body) {
+      res.body.pipe(concat((body: Buffer) => {
         resolve(
           new Response(
             res.statusCode,
-            res.headers, Array.isArray(body) ? new Buffer(0) : body,
-            result.url
+            res.headers,
+            Array.isArray(body) ? new Buffer(0) : body,
+            res.url
           )
         );
       }));
@@ -85,9 +89,9 @@ function doRequest(method, url, options, callback) {
     if (req) {
       req.end(body);
     }
-  });
-  result.getBody = function (encoding) {
-    return result.then(function (res) { return res.getBody(encoding); });
-  };
-  return result.nodeify(callback);
+  }));
 }
+
+(request as any)._setBasicRequest = (_basicRequest: any) => basicRequest = _basicRequest;
+
+export = (request as RequestFn);

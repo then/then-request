@@ -3,31 +3,43 @@
   "version": "2.2.0",
   "description": "A request library that returns promises, inspired by request",
   "keywords": [],
-  "browser": "./browser.js",
+  "main": "lib/index.js",
+  "browser": "lib/browser.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "dependencies": {
+    "@types/concat-stream": "^1.6.0",
+    "@types/node": "^7.0.31",
+    "@types/qs": "^6.2.31",
     "caseless": "~0.11.0",
     "concat-stream": "^1.4.7",
-    "http-basic": "^2.5.1",
-    "http-response-object": "^1.1.0",
-    "promise": "^7.1.1",
+    "http-basic": "^5.0.3",
+    "http-response-object": "^2.0.3",
+    "promise": "^7.3.0",
     "qs": "^6.1.0"
   },
   "devDependencies": {
     "browserify": "^8.1.1",
     "exorcist": "^0.1.6",
+    "flowgen2": "^2.0.0-alpha.10",
     "istanbul": "^0.3.5",
     "minifyify": "^6.0.0",
     "mkdirp": "^0.5.0",
     "rimraf": "^2.2.8",
-    "testit": "^1.2.0"
+    "testit": "^1.2.0",
+    "typescript": "^2.3.4"
   },
   "scripts": {
+    "pretest": "npm run build:types",
     "test": "node test/index.js && istanbul cover test/index.js",
+    "prepublishOnly": "npm run build",
     "prebuild": "rimraf dist && mkdirp dist",
-    "prepublish": "npm run build",
-    "build": "npm run build:full && npm run build:min",
-    "build:full": "browserify -d --standalone request browser.js | exorcist -u request.js.map dist/request.js.map > dist/request.js",
-    "build:min": "browserify -d --standalone request browser.js -p [minifyify --compressPath . --map request.min.js.map --output dist/request.min.js.map] > dist/request.min.js"
+    "build": "npm run build:types && npm run build:full && npm run build:min",
+    "build:types": "tsc && flowgen lib/**/*",
+    "build:full": "browserify -d --standalone request lib/browser.js | exorcist -u request.js.map dist/request.js.map > dist/request.js",
+    "build:min": "browserify -d --standalone request lib/browser.js -p [minifyify --compressPath . --map request.min.js.map --output dist/request.min.js.map] > dist/request.min.js"
   },
   "repository": {
     "type": "git",

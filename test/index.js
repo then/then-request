@@ -21,7 +21,7 @@ require('./browser.js');
 require('./server.js');
 
 function testEnv(env) {
-  var request = require(env === 'browser' ? '../browser.js' : '../index.js');
+  var request = require(env === 'browser' ? '../lib/browser.js' : '../');
   test(env + ' - GET', function () {
     return request('GET', 'http://example.com').then(function (res) {
       assert(res.statusCode === 200);

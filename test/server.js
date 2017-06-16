@@ -4,7 +4,7 @@ var assert = require('assert');
 var PassThrough = require('stream').PassThrough;
 var getResponse = require('./get-mock-response.js');
 
-require('../index.js')._request = function (method, url, options, callback) {
+require('../')._setBasicRequest(function (method, url, options, callback) {
   assert(typeof callback === 'function');
   var duplex = !(method === 'GET' || method === 'DELETE' || method === 'HEAD');
   if (duplex) {
@@ -22,4 +22,4 @@ require('../index.js')._request = function (method, url, options, callback) {
     res.body = stream;
     callback(null, res);
   }
-};
+});
