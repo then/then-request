@@ -2,9 +2,9 @@
 
 var assert = require('assert');
 var getResponse = require('./get-mock-response.js');
-var window = (global.window = {});
+// var window = (global.window = {});
 
-window.XMLHttpRequest = XMLHttpRequest;
+global.XMLHttpRequest = XMLHttpRequest;
 function XMLHttpRequest() {
   assert(arguments.length === 0);
   this._headers = {};
@@ -35,8 +35,8 @@ XMLHttpRequest.prototype.send = function (body) {
 XMLHttpRequest.prototype.getAllResponseHeaders = function () {
   return this._responseHeaders;
 }
-window.location = {};
-window.location.host = 'http://example.com';
+global.location = {};
+global.location.host = 'http://example.com';
 
 
 /*
