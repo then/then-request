@@ -42,6 +42,7 @@ A url as a string (e.g. `http://example.com`). Relative URLs are allowed in the 
  - `followRedirects` - defaults to `true` but can be explicitly set to `false` on node.js to prevent then-request following redirects automatically.
  - `maxRedirects` - sets the maximum number of redirects to follow before erroring on node.js (default: `Infinity`)
  - `gzip` - defaults to `true` but can be explicitly set to `false` on node.js to prevent then-request automatically supporting the gzip encoding on responses.
+ - `agent` - (default: `false`) - An `Agent` to controll keep-alive. When set to `false` use an `Agent` with default values.
  - `timeout` (default: `false`) - times out if no response is returned within the given number of milliseconds.
  - `socketTimeout` (default: `false`) - calls `req.setTimeout` internally which causes the request to timeout if no new data is seen for the given number of milliseconds.  This option is ignored in the browser.
  - `retry` (default: `false`) - retry GET requests.  Set this to `true` to retry when the request errors or returns a status code greater than or equal to 400 (can also be a function that takes `(err, req, attemptNo) => shouldRetry`)

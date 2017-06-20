@@ -7,6 +7,7 @@ import {CachedResponse} from 'http-basic/lib/CachedResponse';
 interface Options {
   allowRedirectHeaders?: string[];
   cache?: 'file' | 'memory' | ICache;
+  agent?: boolean | Agent;
   followRedirects?: boolean;
   gzip?: boolean;
   headers?: Headers;
