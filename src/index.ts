@@ -62,6 +62,7 @@ function request(method: HttpVerb, url: string, options?: Options): ResponseProm
       maxRedirects: options.maxRedirects,
       gzip: options.gzip !== false,
       cache: options.cache,
+      agent: options.agent,
       timeout: options.timeout,
       socketTimeout: options.socketTimeout,
       retry: options.retry,
