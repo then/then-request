@@ -4,7 +4,6 @@ var assert = require('assert');
 var test = require('testit');
 var Promise = require('promise');
 var createServer = require('./mock-server');
-require('./mock-dom');
 
 test('./lib/handle-qs.js', function () {
   var handleQs = require('../lib/handle-qs.js').default;
@@ -71,7 +70,11 @@ function testEnv(env) {
     });
   });
 }
-testEnv('browser');
+
+if (!process.env.CI || /^v8/.test(process.version)) {
+  require('./mock-dom');
+  testEnv('browser');
+}
 testEnv('server');
 
 test('close mock server', () => {
