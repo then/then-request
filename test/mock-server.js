@@ -4,21 +4,20 @@ const concat = require('concat-stream');
 
 function createServer() {
   return http.createServer((req, res) => {
-    const {method, url, headers} = req;
-    if (method === 'GET' && url === '/') {
+    if (req.method === 'GET' && req.url === '/') {
       res.statusCode = 200;
       res.setHeader('FoO', 'bar');
       res.end('body');
       return;
     }
-    if (method === 'GET' && url === '/?foo=baz') {
+    if (req.method === 'GET' && req.url === '/?foo=baz') {
       res.statusCode = 200;
       res.setHeader('FoO', 'baz');
       res.end('body');
       return;
     }
-    if (method === 'POST' && url === '/') {
-      assert(headers['content-type'] === 'application/json');
+    if (req.method === 'POST' && req.url === '/') {
+      assert(req.headers['content-type'] === 'application/json');
       req.pipe(concat(body => {
         assert(JSON.parse(body.toString()).foo === 'baz');
         res.statusCode = 200;
