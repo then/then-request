@@ -1,20 +1,3 @@
-  // assert(typeof callback === 'function');
-  // var duplex = !(method === 'GET' || method === 'DELETE' || method === 'HEAD');
-  // if (duplex) {
-  //   return {
-  //     end: function (body) {
-  //       gotResponse(getResponse(method, url, options.headers, body, {isClient: false}));
-  //     }
-  //   };
-  // } else {
-  //   gotResponse(getResponse(method, url, options.headers, null, {isClient: false}));
-  // }
-  // function gotResponse(res) {
-  //   var stream = new PassThrough();
-  //   stream.end(res.body);
-  //   res.body = stream;
-  //   callback(null, res);
-  // }
 const assert = require('assert');
 const http = require('http');
 const concat = require('concat-stream');
