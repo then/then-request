@@ -3,6 +3,8 @@
 var assert = require('assert');
 var test = require('testit');
 var Promise = require('promise');
+var createServer = require('./mock-server');
+require('./mock-dom');
 
 test('./lib/handle-qs.js', function () {
   var handleQs = require('../lib/handle-qs.js').default;
@@ -16,33 +18,31 @@ test('./lib/handle-qs.js', function () {
   assert(handleQs('http://example.com/?foo=bar#ding', {bing: 'bong'}) === 'http://example.com/?foo=bar&bing=bong#ding');
 });
 
-
-require('./browser.js');
-require('./server.js');
+var server = createServer();
 
 function testEnv(env) {
   var request = require(env === 'browser' ? '../lib/browser.js' : '../');
   test(env + ' - GET', function () {
-    return request('GET', 'http://example.com').then(function (res) {
+    return request('GET', 'http://localhost:3000').then(function (res) {
       assert(res.statusCode === 200);
       assert(res.headers['foo'] === 'bar');
       assert(res.body.toString() === 'body');
     });
   });
   test(env + ' - GET query', function () {
-    return request('GET', 'http://example.com', {qs: {foo: 'baz'}}).then(function (res) {
+    return request('GET', 'http://localhost:3000', {qs: {foo: 'baz'}}).then(function (res) {
       assert(res.statusCode === 200);
       assert(res.headers['foo'] === 'baz');
       assert(res.body.toString() === 'body');
     });
   });
   test(env + ' - GET -> .getBody("utf8")', function () {
-    return request('GET', 'http://example.com').getBody('utf8').then(function (body) {
+    return request('GET', 'http://localhost:3000').getBody('utf8').then(function (body) {
       assert(body === 'body');
     });
   });
   test(env + ' - POST json', function () {
-    return request('POST', 'http://example.com', {json: {foo: 'baz'}}).then(function (res) {
+    return request('POST', 'http://localhost:3000', {json: {foo: 'baz'}}).then(function (res) {
       assert(res.statusCode === 200);
       assert(res.body.toString() === 'json body');
     });
@@ -50,7 +50,7 @@ function testEnv(env) {
 
 
   test(env + ' - invalid method', function () {
-    return request({}, 'http://example.com').then(function (res) {
+    return request({}, 'http://localhost:3000').then(function (res) {
       throw new Error('Expected an error');
     }, function (err) {
       assert(err instanceof TypeError);
@@ -64,7 +64,7 @@ function testEnv(env) {
     });
   });
   test(env + ' - invalid options', function () {
-    return request('GET', 'http://example.com', 'options').then(function (res) {
+    return request('GET', 'http://localhost:3000', 'options').then(function (res) {
       throw new Error('Expected an error');
     }, function (err) {
       assert(err instanceof TypeError);
@@ -73,3 +73,7 @@ function testEnv(env) {
 }
 testEnv('browser');
 testEnv('server');
+
+test('close mock server', () => {
+  server.close();
+});
