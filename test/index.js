@@ -4,6 +4,7 @@ var assert = require('assert');
 var test = require('testit');
 var Promise = require('promise');
 var createServer = require('./mock-server');
+var mockDOM = require('./mock-dom');
 
 test('./lib/handle-qs.js', function () {
   var handleQs = require('../lib/handle-qs.js').default;
@@ -20,8 +21,10 @@ test('./lib/handle-qs.js', function () {
 var server = createServer();
 
 function testEnv(env) {
-  var request = require(env === 'browser' ? '../lib/browser.js' : '../');
+  var request, FormData;
   test(env + ' - GET', function () {
+    request = require(env === 'browser' ? '../lib/browser.js' : '../');
+    FormData = request.FormData;
     return request('GET', 'http://localhost:3000').then(function (res) {
       assert(res.statusCode === 200);
       assert(res.headers['foo'] === 'bar');
@@ -44,6 +47,14 @@ function testEnv(env) {
     return request('POST', 'http://localhost:3000', {json: {foo: 'baz'}}).then(function (res) {
       assert(res.statusCode === 200);
       assert(res.body.toString() === 'json body');
+    });
+  });
+  test(env + ' - POST form', function () {
+    const fd = new FormData();
+    fd.append('foo', 'baz');
+    return request('POST', 'http://localhost:3000/form', {form: fd}).then(function (res) {
+      assert(res.statusCode === 200);
+      assert(res.body.toString() === 'form body');
     });
   });
 
@@ -72,8 +83,9 @@ function testEnv(env) {
 }
 
 if (!process.env.CI || /^v8/.test(process.version)) {
-  require('./mock-dom');
+  test('enable dom', () => mockDOM.enable());
   testEnv('browser');
+  test('disable dom', () => mockDOM.enable());
 }
 testEnv('server');
 

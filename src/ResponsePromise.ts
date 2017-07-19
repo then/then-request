@@ -31,3 +31,4 @@ function toResponsePromise(result: Promise<Response<Buffer | string>>): Response
 }
 
 export default toResponsePromise;
+exports.ResponsePromise = undefined;

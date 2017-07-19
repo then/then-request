@@ -1,12 +1,16 @@
 'use strict';
 
 import {HttpVerb} from 'http-basic/lib/HttpVerb';
-import Response = require('http-response-object');
+import { Headers } from 'http-basic/lib/Headers';
+import GenericResponse = require('http-response-object');
 import Promise = require('promise');
 import {Options} from './Options';
 import toResponsePromise, {ResponsePromise} from './ResponsePromise';
 import {RequestFn} from './RequestFn';
 import handleQs from './handle-qs';
+
+type Response = GenericResponse<Buffer | string>;
+export {HttpVerb, Headers, Options, ResponsePromise, Response};
 
 function request(method: HttpVerb, url: string, options: Options): ResponsePromise {
   return toResponsePromise(new Promise(function (resolve, reject) {
@@ -88,6 +92,10 @@ function request(method: HttpVerb, url: string, options: Options): ResponsePromi
         'Content-Type': 'application/json',
       };
     }
+  
+    if (options.form) {
+      options.body = (options.form as any);
+    }
 
     if (options.timeout) {
       xhr.timeout = options.timeout;
@@ -109,7 +117,7 @@ function request(method: HttpVerb, url: string, options: Options): ResponsePromi
             headers[h[0].toLowerCase()] = h.slice(1).join(':').trim();
           }
         });
-        var res = new Response(xhr.status, headers, xhr.responseText, url);
+        var res = new GenericResponse(xhr.status, headers, xhr.responseText, url);
         resolve(res);
       }
     };
@@ -125,4 +133,12 @@ function request(method: HttpVerb, url: string, options: Options): ResponsePromi
     xhr.send(options.body ? options.body : null);
   }));
 }
-export = (request as RequestFn);
+
+const fd: any = FormData;
+export {fd as FormData};
+export default (request as RequestFn);
+
+module.exports = request;
+module.exports.default = request;
+module.exports.FormData = fd;
+

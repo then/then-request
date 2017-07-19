@@ -1,6 +1,6 @@
 # then-request
 
-A request library that returns promises, inspired by request
+A request library that returns promises and supports both browsers and node.js
 
 [![Build Status](https://img.shields.io/travis/then/then-request/master.svg)](https://travis-ci.org/then/then-request)
 [![Dependency Status](https://img.shields.io/david/then/then-request.svg)](https://david-dm.org/then/then-request)
@@ -14,12 +14,48 @@ A request library that returns promises, inspired by request
 
 `request(method, url, options, callback?)`
 
-e.g.
+The following examples all work on both client and server.
 
 ```js
 var request = require('then-request');
 
 request('GET', 'http://example.com').done(function (res) {
+  console.log(res.getBody());
+});
+
+request('POST', 'http://example.com/json-api', {json: {some: 'values'}}).getBody('utf8').then(JSON.parse).done(function (res) {
+  console.log(res);
+});
+
+var FormData = request.FormData;
+var data = new FormData();
+
+data.append('some', 'values');
+
+request('POST', 'http://example.com/form-api', {form: data}).done(function (res) {
+  console.log(res.getBody());
+});
+```
+
+Or with ES6
+
+```js
+import request, {FormData} from 'then-request';
+
+request('GET', 'http://example.com').done((res) => {
+  console.log(res.getBody());
+});
+
+request('POST', 'http://example.com/json-api', {json: {some: 'values'}}).getBody('utf8').then(JSON.parse).done((res) => {
+  console.log(res);
+});
+
+var FormData = request.FormData;
+var data = new FormData();
+
+data.append('some', 'values');
+
+request('POST', 'http://example.com/form-api', {form: data}).done((res) => {
   console.log(res.getBody());
 });
 ```
@@ -38,6 +74,7 @@ A url as a string (e.g. `http://example.com`). Relative URLs are allowed in the 
  - `headers` - http headers (default: `{}`)
  - `body` - body for PATCH, POST and PUT requests.  Must be a `Buffer` or `String` (only strings are accepted client side)
  - `json` - sets `body` but to JSON representation of value and adds `Content-type: application/json`.  Does not have any affect on how the response is treated.
+ - `form` - You can pass a `FormData` instance to the `form` option, this will manage all the appropriate headers for you.  Does not have any affect on how the response is treated.
  - `cache` - only used in node.js (browsers already have their own caches) Can be `'memory'`, `'file'` or your own custom implementaton (see https://github.com/ForbesLindesay/http-basic#implementing-a-cache).
  - `followRedirects` - defaults to `true` but can be explicitly set to `false` on node.js to prevent then-request following redirects automatically.
  - `maxRedirects` - sets the maximum number of redirects to follow before erroring on node.js (default: `Infinity`)
@@ -50,9 +87,9 @@ A url as a string (e.g. `http://example.com`). Relative URLs are allowed in the 
  - `maxRetries` (default: `5`) - the number of times to retry before giving up.
 
 
-**Callback / Returns:**
+**Returns:**
 
-If a callback is provided it is called with `err` and `res`. If no callback is provided, a [Promise](https://www.promisejs.org/) is returned that eventually resolves to `res`.  The resulting Promise also has an additional `.getBody(encoding?)` method that is equivallent to calling `.then(function (res) { return res.getBody(encoding?); })`.
+A [Promise](https://www.promisejs.org/) is returned that eventually resolves to the `Response`.  The resulting Promise also has an additional `.getBody(encoding?)` method that is equivallent to calling `.then(function (res) { return res.getBody(encoding?); })`.
 
 ### Response
 
@@ -77,6 +114,16 @@ function getBody(encoding) {
   return encoding ? this.body.toString(encoding) : this.body;
 }
 ```
+
+### FormData
+
+```js
+var FormData = require('then-request').FormData;
+```
+
+Form data either exposes the node.js module, [form-data](https://www.npmjs.com/package/form-data), or the builtin browser object [FormData](https://developer.mozilla.org/en/docs/Web/API/FormData), as appropriate.
+
+They have broadly the same API, with the exception that form-data handles node.js streams and Buffers, while FormData handles the browser's `File` Objects.
 
 ## License
 

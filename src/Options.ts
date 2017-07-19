@@ -3,6 +3,7 @@ import { Headers } from 'http-basic/lib/Headers';
 import { ICache } from 'http-basic/lib/ICache';
 import Response = require('http-response-object');
 import {CachedResponse} from 'http-basic/lib/CachedResponse';
+import FormData = require('form-data');
 
 interface Options {
   allowRedirectHeaders?: string[];
@@ -26,6 +27,7 @@ interface Options {
 
   qs?: {[key: string]: any};
   json?: any;
+  form?: FormData;
   body?: string | Buffer;
 }
 export {Options};
