@@ -28,6 +28,6 @@ interface Options {
   qs?: {[key: string]: any};
   json?: any;
   form?: FormData;
-  body?: string | Buffer;
+  body?: string | Buffer | NodeJS.ReadableStream;
 }
 export {Options};

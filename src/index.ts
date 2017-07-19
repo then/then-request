@@ -65,6 +65,18 @@ class FormBody implements NormalizedBody {
     this._body.pipe(stream);
   }
 }
+class StreamBody implements NormalizedBody {
+  private _body: NodeJS.ReadableStream;
+  constructor(body: NodeJS.ReadableStream) {
+    this._body = body;
+  }
+  getHeaders(): Promise<Headers> {
+    return Promise.resolve({});
+  }
+  pipe(stream: NodeJS.WritableStream) {
+    this._body.pipe(stream);
+  }
+}
 function handleBody(options: Options): NormalizedBody {
   if (options.form) {
     return new FormBody(options.form);
@@ -82,6 +94,9 @@ function handleBody(options: Options): NormalizedBody {
     body = new Buffer(0);
   }
   if (!Buffer.isBuffer(body)) {
+    if (typeof body.pipe === 'function') {
+      return new StreamBody(body);
+    }
     throw new TypeError('body should be a Buffer or a String');
   }
   return new BufferBody(body, extraHeaders);

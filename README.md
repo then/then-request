@@ -72,7 +72,7 @@ A url as a string (e.g. `http://example.com`). Relative URLs are allowed in the 
 
  - `qs` - an object containing querystring values to be appended to the uri
  - `headers` - http headers (default: `{}`)
- - `body` - body for PATCH, POST and PUT requests.  Must be a `Buffer` or `String` (only strings are accepted client side)
+ - `body` - body for PATCH, POST and PUT requests.  Must be a `Buffer`, `ReadableStream` or `String` (only strings are accepted client side)
  - `json` - sets `body` but to JSON representation of value and adds `Content-type: application/json`.  Does not have any affect on how the response is treated.
  - `form` - You can pass a `FormData` instance to the `form` option, this will manage all the appropriate headers for you.  Does not have any affect on how the response is treated.
  - `cache` - only used in node.js (browsers already have their own caches) Can be `'memory'`, `'file'` or your own custom implementaton (see https://github.com/ForbesLindesay/http-basic#implementing-a-cache).
