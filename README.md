@@ -6,6 +6,10 @@ A request library that returns promises and supports both browsers and node.js
 [![Dependency Status](https://img.shields.io/david/then/then-request.svg)](https://david-dm.org/then/then-request)
 [![NPM version](https://img.shields.io/npm/v/then-request.svg)](https://www.npmjs.org/package/then-request)
 
+<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/gg9sZwctSLxyov1sJwW6pfyS/then/then-request'>
+  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/gg9sZwctSLxyov1sJwW6pfyS/then/then-request.svg' />
+</a>
+
 ## Installation
 
     npm install then-request
