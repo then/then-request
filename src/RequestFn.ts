@@ -1,4 +1,4 @@
-import {HttpVerb} from 'http-basic/lib/HttpVerb';
+import {HttpVerb} from 'http-basic';
 import {Options} from './Options';
 import {ResponsePromise} from './ResponsePromise';
 

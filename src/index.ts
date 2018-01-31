@@ -1,37 +1,36 @@
 'use strict';
 
-import {HttpVerb} from 'http-basic/lib/HttpVerb';
 import GenericResponse = require('http-response-object');
 import Promise = require('promise');
 import concat = require('concat-stream');
-import { Headers } from 'http-basic/lib/Headers';
+import { IncomingHttpHeaders } from 'http';
 import {Options} from './Options';
 import toResponsePromise, {ResponsePromise} from './ResponsePromise';
 import {RequestFn} from './RequestFn';
 import handleQs from './handle-qs';
-import _basicRequest = require('http-basic');
+import _basicRequest, {HttpVerb} from 'http-basic';
 import FormData = require('form-data');
 
 type Response = GenericResponse<Buffer | string>;
-export {HttpVerb, Headers, Options, ResponsePromise, Response};
+export {HttpVerb, IncomingHttpHeaders as Headers, Options, ResponsePromise, Response};
 
 const caseless = require('caseless');
 
 let basicRequest = _basicRequest;
 
 interface NormalizedBody {
-  getHeaders(): Promise<Headers>;
+  getHeaders(): Promise<IncomingHttpHeaders>;
   pipe(stream: NodeJS.WritableStream): void;
 }
 class BufferBody implements NormalizedBody {
   private _body: Buffer;
-  private _headers: Headers;
-  constructor(body: Buffer, extraHeaders: Headers) {
+  private _headers: IncomingHttpHeaders;
+  constructor(body: Buffer, extraHeaders: IncomingHttpHeaders) {
     this._body = body;
     this._headers = extraHeaders;
   }
-  getHeaders(): Promise<Headers> {
-    return Promise.resolve({'content-length': '' + this._body.length, ...this._headers});
+  getHeaders(): Promise<IncomingHttpHeaders> {
+    return Promise.resolve<IncomingHttpHeaders>({'content-length': '' + this._body.length, ...this._headers});
   }
   pipe(stream: NodeJS.WritableStream) {
     stream.end(this._body);
@@ -42,7 +41,7 @@ class FormBody implements NormalizedBody {
   constructor(body: FormData) {
     this._body = body;
   }
-  getHeaders(): Promise<Headers> {
+  getHeaders(): Promise<IncomingHttpHeaders> {
     const headers = this._body.getHeaders();
     return new Promise((resolve, reject) => {
       let gotLength = false;
@@ -70,7 +69,7 @@ class StreamBody implements NormalizedBody {
   constructor(body: NodeJS.ReadableStream) {
     this._body = body;
   }
-  getHeaders(): Promise<Headers> {
+  getHeaders(): Promise<IncomingHttpHeaders> {
     return Promise.resolve({});
   }
   pipe(stream: NodeJS.WritableStream) {
@@ -131,7 +130,7 @@ function request(method: HttpVerb, url: string, options: Options = {}): Response
     const duplex = !(method === 'GET' || method === 'DELETE' || method === 'HEAD');
     if (duplex) {
       const body = handleBody(options);
-      body.getHeaders().then((bodyHeaders: Headers) => {
+      body.getHeaders().then(bodyHeaders => {
         Object.keys(bodyHeaders).forEach(key => {
           if (!headers.has(key)) {
             headers.set(key, bodyHeaders[key]);
@@ -164,8 +163,9 @@ function request(method: HttpVerb, url: string, options: Options = {}): Response
         isMatch: options.isMatch,
         isExpired: options.isExpired,
         canCache: options.canCache,
-      }, (err: NodeJS.ErrnoException, res: GenericResponse<NodeJS.ReadableStream>) => {
+      }, (err: NodeJS.ErrnoException | null, res?: GenericResponse<NodeJS.ReadableStream>) => {
         if (err) return reject(err);
+        if (!res) return reject(new Error('No request was received'));
         res.body.on('error', reject);
         res.body.pipe(concat((body: Buffer) => {
           resolve(

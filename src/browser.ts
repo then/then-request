@@ -1,7 +1,7 @@
 'use strict';
 
 import {HttpVerb} from 'http-basic/lib/HttpVerb';
-import { Headers } from 'http-basic/lib/Headers';
+import { IncomingHttpHeaders } from 'http';
 import GenericResponse = require('http-response-object');
 import Promise = require('promise');
 import {Options} from './Options';
@@ -10,7 +10,7 @@ import {RequestFn} from './RequestFn';
 import handleQs from './handle-qs';
 
 type Response = GenericResponse<Buffer | string>;
-export {HttpVerb, Headers, Options, ResponsePromise, Response};
+export {HttpVerb, IncomingHttpHeaders as Headers, Options, ResponsePromise, Response};
 
 function request(method: HttpVerb, url: string, options: Options): ResponsePromise {
   return toResponsePromise(new Promise(function (resolve, reject) {
