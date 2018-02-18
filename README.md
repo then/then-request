@@ -82,6 +82,7 @@ A url as a string (e.g. `http://example.com`). Relative URLs are allowed in the 
  - `cache` - only used in node.js (browsers already have their own caches) Can be `'memory'`, `'file'` or your own custom implementaton (see https://github.com/ForbesLindesay/http-basic#implementing-a-cache).
  - `followRedirects` - defaults to `true` but can be explicitly set to `false` on node.js to prevent then-request following redirects automatically.
  - `maxRedirects` - sets the maximum number of redirects to follow before erroring on node.js (default: `Infinity`)
+ - `allowRedirectHeaders` (default: `null`) - an array of headers allowed for redirects (none if `null`).
  - `gzip` - defaults to `true` but can be explicitly set to `false` on node.js to prevent then-request automatically supporting the gzip encoding on responses.
  - `agent` - (default: `false`) - An `Agent` to controll keep-alive. When set to `false` use an `Agent` with default values.
  - `timeout` (default: `false`) - times out if no response is returned within the given number of milliseconds.
