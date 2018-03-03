@@ -90,7 +90,7 @@ function handleBody(options: Options): NormalizedBody {
     body = Buffer.from(body);
   }
   if (!body) {
-    body = new Buffer(0);
+    body = Buffer.alloc(0);
   }
   if (!Buffer.isBuffer(body)) {
     if (typeof body.pipe === 'function') {
@@ -172,7 +172,7 @@ function request(method: HttpVerb, url: string, options: Options = {}): Response
             new GenericResponse(
               res.statusCode,
               res.headers,
-              Array.isArray(body) ? new Buffer(0) : body,
+              Array.isArray(body) ? Buffer.alloc(0) : body,
               res.url
             )
           );
