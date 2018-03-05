@@ -46,6 +46,9 @@
     "build:full": "browserify -d --standalone request lib/browser.js | exorcist -u request.js.map dist/request.js.map > dist/request.js",
     "build:min": "browserify -d --standalone request lib/browser.js -p [minifyify --compressPath . --map request.min.js.map --output dist/request.min.js.map] > dist/request.min.js"
   },
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/then/then-request.git"
