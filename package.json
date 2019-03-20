@@ -1,6 +1,6 @@
 {
   "name": "then-request",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "A request library that returns promises, inspired by request",
   "keywords": [],
   "main": "lib/index.js",
