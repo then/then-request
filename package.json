@@ -17,7 +17,7 @@
     "caseless": "~0.12.0",
     "concat-stream": "^1.6.0",
     "form-data": "^2.2.0",
-    "http-basic": "^7.0.0",
+    "http-basic": "^8.1.1",
     "http-response-object": "^3.0.1",
     "promise": "^8.0.0",
     "qs": "^6.4.0"
@@ -26,7 +26,7 @@
     "browserify": "^14.4.0",
     "busboy": "^0.2.14",
     "exorcist": "^0.4.0",
-    "flowgen2": "^2.2.1",
+    "flowgen2": "^2.2.2",
     "istanbul": "^0.4.5",
     "jsdom": "^11.1.0",
     "minifyify": "^7.3.5",
