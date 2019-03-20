@@ -26,7 +26,7 @@
     "browserify": "^14.4.0",
     "busboy": "^0.2.14",
     "exorcist": "^0.4.0",
-    "flowgen2": "^2.0.0-alpha.12",
+    "flowgen2": "^2.2.1",
     "istanbul": "^0.4.5",
     "jsdom": "^11.1.0",
     "minifyify": "^7.3.5",
