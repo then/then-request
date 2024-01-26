@@ -108,6 +108,11 @@ function request(method: HttpVerb, url: string, options: Options): ResponsePromi
         reject(err);
       };
     }
+
+    if (options.withCredentials) {
+      xhr.withCredentials = options.withCredentials;
+    }
+
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         var headers: {[key: string]: string} = {};
