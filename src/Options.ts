@@ -17,6 +17,7 @@ interface Options {
   retryDelay?: number | ((err: NodeJS.ErrnoException | null, res: Response<NodeJS.ReadableStream | Buffer | string> | void, attemptNumber: number) => number);
   socketTimeout?: number;
   timeout?: number;
+  withCredentials?: boolean;
 
   isMatch?: (requestHeaders: IncomingHttpHeaders, cachedResponse: CachedResponse, defaultValue: boolean) => boolean;
   isExpired?: (cachedResponse: CachedResponse, defaultValue: boolean) => boolean;
